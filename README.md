@@ -5,7 +5,7 @@
 [issues]: https://img.shields.io/github/issues/David-pm-pl/EpicCustomAlerts.svg?color=yellow&style=for-the-badge
 [phpversion]: https://img.shields.io/badge/PHP-8.0%2B-red?style=for-the-badge
 [issueslink]: https://github.com/David-pm-pl/EpicCustomAlerts/issues
-[discord]: https://img.shields.io/discord/942248186670641202.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2)
+[discord]: https://img.shields.io/discord/942248186670641202.svg?label=&logo=discord&logoColor=ffffff&color=7389D8&labelColor=6A7EC2
 [discordlink]: https://discord.gg/34PC5u9W
 
 [![releasesImg]][releases] [![licenseImg]][license] ![phpversion] [![issues]][issueslink] [![discord]][discordlink]
