@@ -1,0 +1,9 @@
+--- # Poggit-CI Manifest. Open the CI at https://poggit.pmmp.io/ci/David-pm-pl/EpicCustomAlerts
+build-by-default: true
+branches:
+- stable
+projects:
+  EpicCustomAlerts:
+    path: ""
+    icon: "assets/images/icon.png"
+...
