@@ -27,7 +27,7 @@ It allows you to customize the messages, it also brings a message customization 
 - [ ] Event For EpicCustomAlerts
 - [ ] Outdated Client
 - [ ] Outdated Server
-- [ ] Command
+- [X] Command
 
 ## Additional Notes
 
