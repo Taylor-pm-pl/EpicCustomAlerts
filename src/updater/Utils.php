@@ -4,6 +4,7 @@ namespace davidglitch04\EpicCustomAlerts\updater;
 
 use pocketmine\Server;
 use davidglitch04\EpicCustomAlerts\Loader;
+use davidglitch04\EpicCustomAlerts\VersionInfo;
 
 class Utils{
     /**
@@ -21,7 +22,7 @@ class Utils{
             return;
         }
         if (array_key_exists("version", $data["Response"]) && array_key_exists("time", $data["Response"]) && array_key_exists("link", $data["Response"])) {
-            $update = Utils::compareVersions(strtolower($plugin->getDescription()->getVersion()), strtolower($data["Response"]["version"]));
+            $update = Utils::compareVersions(strtolower(VersionInfo::PLUGIN_VERSION), strtolower($data["Response"]["version"]));
             if ($update == 0) {
                 Server::getInstance()->getLogger()->debug("Plugin up-to-date !");
                 return;
