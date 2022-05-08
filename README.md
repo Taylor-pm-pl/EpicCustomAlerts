@@ -20,6 +20,14 @@ It allows you to customize the messages, it also brings a message customization 
 3. Restart the server.
 4. Done!
 
+## TODO
+- [ ] World Change
+- [ ] Player Death
+- [ ] Whitelist
+- [ ] Outdated Client
+- [ ] Outdated Server
+- [ ] Command
+
 ## Additional Notes
 
 - If you found bugs or want to give suggestions, please visit <a href="https://github.com/David-pm-pl/EpicCustomAlerts/issues">here</a> or join our Discord server.
