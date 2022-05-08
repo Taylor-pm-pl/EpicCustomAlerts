@@ -67,7 +67,7 @@ class Loader extends PluginBase{
         {
             $msg = $this->config[$type]["message"];
             foreach($replaces as $key => $value){
-                $msg = str_replace("{" . $key . "}", $value, $msg);
+                $msg = str_replace("{" . $key . "}", (string)$value, $msg);
             }
             return TextFormat::colorize($msg);
     }

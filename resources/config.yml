@@ -18,7 +18,7 @@ Quit:
   message: "&4[{TIME}] &c{PLAYER}&e has left the game"
 WorldChange:
   custom: true
-  message: "&2[{TIME}] &a{PLAYER}&e moved from &c{ORIGIN}&e to &a{TARGET}"
+  message: "&2[{TIME}] &a{PLAYER}&e moved from &c{FROM}&e to &a{TO}"
 Death:
   hide: false
   custom: true
