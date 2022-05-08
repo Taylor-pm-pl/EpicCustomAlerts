@@ -34,7 +34,7 @@ class Loader extends PluginBase{
         DefaultPermissions::registerPermission(new Permission("epiccustomalerts.command.allow", "Allow to use epiccustomalerts control"));
         $this->getServer()->getCommandMap()->register("epiccustomalerts", new EpicCustomAlerts($this));
         $this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
-        if(VersionInfo::IS_DEVELOPMENT_BUILD){
+        if(VersionInfo::IS_DEVELOPMENT_BUILD){ /* @phpstan-ignore-line (If condition is always false.) */
 			$this->getLogger()->warning("You are using the development builds. Development builds might have unexpected bugs, crash, break your plugins, corrupt all your data and more. Unless you're a developer and know what you're doing, please AVOID using development builds in production!");
 		}
         $this->checkUpdater();
