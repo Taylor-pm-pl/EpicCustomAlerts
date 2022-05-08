@@ -6,4 +6,5 @@ projects:
   EpicCustomAlerts:
     path: ""
     icon: "assets/images/icon.png"
+    phpstan: false
 ...
