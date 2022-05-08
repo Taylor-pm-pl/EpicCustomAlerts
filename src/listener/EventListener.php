@@ -3,9 +3,15 @@
 namespace davidglitch04\EpicCustomAlerts\listener;
 
 use davidglitch04\EpicCustomAlerts\Loader;
+use pocketmine\event\entity\EntityTeleportEvent;
 use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerJoinEvent;
+use pocketmine\event\player\PlayerLoginEvent;
 use pocketmine\event\player\PlayerQuitEvent;
+use pocketmine\event\server\DataPacketReceiveEvent;
+use pocketmine\network\mcpe\protocol\LoginPacket;
+use pocketmine\network\mcpe\protocol\ProtocolInfo;
+use pocketmine\player\Player;
 use pocketmine\Server;
 
 class EventListener implements Listener{
@@ -23,7 +29,7 @@ class EventListener implements Listener{
             "PLAYER" => $player->getName(),
             "MAXPLAYERS" => Server::getInstance()->getMaxPlayers(),
             "TOTALPLAYERS" => count(Server::getInstance()->getOnlinePlayers()),
-            "TIME" => date($this->cfg["date-format"])
+            "TIME" => date($this->eca->getConfig()["date-format"])
         ];
         if ($player->hasPlayedBefore() && $this->eca->isCustom("FirstJoin")){
             $event->setJoinMessage($this->eca->getMessage("FirtsJoin", $replaces));
@@ -42,7 +48,7 @@ class EventListener implements Listener{
             "PLAYER" => $player->getName(),
             "MAXPLAYERS" => Server::getInstance()->getMaxPlayers(),
             "TOTALPLAYERS" => count(Server::getInstance()->getOnlinePlayers()),
-            "TIME" => date($this->cfg["date-format"])
+            "TIME" => date($this->eca->getConfig()["date-format"])
         ];
         if ($this->eca->isHidden("Quit")){
             $event->setQuitMessage("");
@@ -50,6 +56,77 @@ class EventListener implements Listener{
             $event->setQuitMessage($this->eca->getMessage("Quit", $replaces));
         } else{
             $event->setQuitMessage($event->getQuitMessage());
+        }
+    }
+
+    public function onPlayerLogin(PlayerLoginEvent $event) : void {
+        $player = $event->getPlayer();
+        $replaces = [
+            "PLAYER" => $player->getName(),
+            "MAXPLAYERS" => Server::getInstance()->getMaxPlayers(),
+            "TOTALPLAYERS" => count(Server::getInstance()->getOnlinePlayers()),
+            "TIME" => date($this->eca->getConfig()["date-format"])
+        ];
+        if (count(Server::getInstance()->getOnlinePlayers()) - 1 < Server::getInstance()->getMaxPlayers()){
+            if (!Server::getInstance()->isWhitelisted($player->getName())){
+                if ($this->eca->isCustom("WhitelistedServer")){
+                    $player->kick($this->eca->getMessage("WhitelistedServer", $replaces), $this->eca->getMessage("WhitelistedServer", $replaces));
+                    $event->cancel();
+                    return;
+                }
+            }
+        } else{
+            if ($this->eca->isCustom("FullServer")){
+                $player->kick($this->eca->getMessage("FullServer", $replaces), $this->eca->getMessage("FullServer", $replaces));
+                $event->cancel();
+                return;
+            }
+        }
+    }
+
+    public function onReceivePacket(DataPacketReceiveEvent $event) : void {
+        $player = $event->getOrigin()->getPlayer();
+    	$packet = $event->getPacket();
+        $replaces = [
+            "PLAYER" => $player->getName(),
+            "MAXPLAYERS" => Server::getInstance()->getMaxPlayers(),
+            "TOTALPLAYERS" => count(Server::getInstance()->getOnlinePlayers()),
+            "TIME" => date($this->eca->getConfig()["date-format"])
+        ];
+        if ($packet instanceof LoginPacket){
+            if ($packet->protocol < ProtocolInfo::CURRENT_PROTOCOL){
+                if ($this->eca->isCustom("OutdatedClient")){
+                    $player->kick($this->eca->getMessage("OutdatedClient", $replaces), $this->eca->getMessage("OutdatedClient", $replaces));
+                    $event->cancel();
+                    return;
+                }
+            } elseif ($packet->protocol > ProtocolInfo::CURRENT_PROTOCOL){
+                if ($this->eca->isCustom("OutdatedServer")){
+                    $player->kick($this->eca->getMessage("OutdatedServer", $replaces), $this->eca->getMessage("OutdatedServer", $replaces));
+                    $event->cancel();
+                    return;
+                }
+            }
+        }
+    }
+
+    public function onChangeWorld(EntityTeleportEvent $event) : void {
+        $player = $event->getEntity();
+        if ($player instanceof Player){
+            $from = $event->getFrom();
+            $to = $event->getTo();
+            $replaces = [
+                "FORM" => $from->getWorld()->getDisplayName(),
+    	        "TO" => $to->getWorld()->getDisplayName(),
+    	        "PLAYER" => $player->getName(),
+    	        "MAXPLAYERS" => Server::getInstance()->getMaxPlayers(),
+    	        "TOTALPLAYERS" => count(Server::getInstance()->getOnlinePlayers()),
+    	        "TIME" => date($this->eca->getConfig()["date-format"])
+            ];
+            if ($this->eca->isCustom("WorldChange")){
+                $msg = $this->eca->getMessage("WorldChange", $replaces);
+                Server::getInstance()->broadcastMessage($msg);
+            }
         }
     }
 }

@@ -21,11 +21,11 @@ It allows you to customize the messages, it also brings a message customization 
 4. Done!
 
 ## TODO
-- [ ] World Change
+- [X] World Change
 - [ ] Player Death
-- [ ] Whitelist
-- [ ] Outdated Client
-- [ ] Outdated Server
+- [X] Whitelist
+- [X] Outdated Client
+- [X] Outdated Server
 - [ ] Command
 
 ## Additional Notes
