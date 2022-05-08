@@ -5,7 +5,7 @@
 [issues]: https://img.shields.io/github/issues/David-pm-pl/EpicCustomAlerts.svg?color=yellow&style=for-the-badge
 [phpversion]: https://img.shields.io/badge/PHP-8.0%2B-red?style=for-the-badge
 [issueslink]: https://github.com/David-pm-pl/EpicCustomAlerts/issues
-[discord]: https://img.shields.io/badge/Discord%2B-blue?style=for-the-badge
+[discord]: https://img.shields.io/badge/Discord-blue?style=for-the-badge
 [discordlink]: https://discord.gg/34PC5u9W
 
 [![releasesImg]][releases] [![licenseImg]][license] ![phpversion] [![issues]][issueslink] [![discord]][discordlink]
@@ -22,10 +22,11 @@ It allows you to customize the messages, it also brings a message customization 
 
 ## TODO
 - [X] World Change
-- [ ] Player Death
+- [X] Player Death
 - [X] Whitelist
-- [X] Outdated Client
-- [X] Outdated Server
+- [ ] Event For EpicCustomAlerts
+- [ ] Outdated Client
+- [ ] Outdated Server
 - [ ] Command
 
 ## Additional Notes
