@@ -34,7 +34,7 @@ class EventListener implements Listener{
             "TOTALPLAYERS" => count(Server::getInstance()->getOnlinePlayers()),
             "TIME" => date($this->config["date-format"])
         ];
-        if ($player->hasPlayedBefore() && $this->eca->isCustom("FirstJoin")){
+        if (!$player->hasPlayedBefore() && $this->eca->isCustom("FirstJoin")){
             $event->setJoinMessage($this->eca->getMessage("FirstJoin", $replaces));
         } elseif ($this->eca->isHidden("Join")){
             $event->setJoinMessage("");
