@@ -25,8 +25,8 @@ It allows you to customize the messages, it also brings a message customization 
 - [X] Player Death
 - [X] Whitelist
 - [ ] Event For EpicCustomAlerts
-- [ ] Outdated Client
-- [ ] Outdated Server
+- [X] Outdated Client
+- [X] Outdated Server
 - [X] Command
 
 ## Additional Notes

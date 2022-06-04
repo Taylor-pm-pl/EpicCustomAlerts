@@ -1,5 +1,5 @@
 name: EpicCustomAlerts
-version: 0.0.1
+version: 0.0.2
 api: 4.0.0
 main: davidglitch04\EpicCustomAlerts\Loader
 src-namespace-prefix: davidglitch04\EpicCustomAlerts

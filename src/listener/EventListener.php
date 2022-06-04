@@ -11,6 +11,9 @@ use pocketmine\event\player\PlayerDeathEvent;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerLoginEvent;
 use pocketmine\event\player\PlayerQuitEvent;
+use pocketmine\event\server\DataPacketReceiveEvent;
+use pocketmine\network\mcpe\protocol\LoginPacket;
+use pocketmine\network\mcpe\protocol\ProtocolInfo;
 use pocketmine\player\Player;
 use pocketmine\Server;
 
@@ -119,5 +122,28 @@ class EventListener implements Listener{
                 $event->setDeathMessage($event->getDeathMessage());
             }
         }
+    }
+
+    public function onReceivePacket(DataPacketReceiveEvent $event){
+    	$origin = $event->getOrigin();
+    	$packet = $event->getPacket();
+        $replaces = [
+            "MAXPLAYERS" => Server::getInstance()->getMaxPlayers(),
+            "TOTALPLAYERS" => count(Server::getInstance()->getOnlinePlayers()),
+            "TIME" => date($this->config["date-format"])
+        ];
+    	if($packet instanceof LoginPacket){
+    	    if($packet->protocol < ProtocolInfo::CURRENT_PROTOCOL){
+    	        if($this->eca->isCustom("OutdatedClient")){
+                    $origin->disconnect($this->eca->getMessage("OutdatedClient", $replaces));
+                    $event->cancel();
+    	        }
+    	    } elseif($packet->protocol > ProtocolInfo::CURRENT_PROTOCOL){
+    	        if($this->eca->isCustom("OutdatedServer")){
+                    $origin->disconnect($this->eca->getMessage("OutdatedServer", $replaces));
+                    $event->cancel();
+    	        }
+    	    }
+    	}
     }
 }

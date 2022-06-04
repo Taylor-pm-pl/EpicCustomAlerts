@@ -2,6 +2,12 @@ date-format: "H:i:s"
 WhitelistedServer:
   custom: true
   message: "&c&oThis Server is whitelisted!"
+OutdatedClient:
+  custom: true
+  message: "&cYour MCPE client is outdated!"
+OutdatedServer:
+  custom: true
+  message: "&cOops! Server outdated!"
 FullServer:
   custom: true
   message: "&e{PLAYER}&b, The Server is full &c[{TOTALPLAYERS}/{MAXPLAYERS}]&b!\n&l&dTry to join later :)"
