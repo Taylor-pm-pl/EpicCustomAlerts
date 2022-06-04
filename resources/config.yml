@@ -1,4 +1,5 @@
 date-format: "H:i:s"
+enableUpdateAutoUpdater: true
 WhitelistedServer:
   custom: true
   message: "&c&oThis Server is whitelisted!"

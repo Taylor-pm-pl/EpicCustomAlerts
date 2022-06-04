@@ -6,7 +6,7 @@ namespace davidglitch04\EpicCustomAlerts;
 
 final class VersionInfo{
 
-	public const PLUGIN_VERSION = "0.0.1";
+	public const PLUGIN_VERSION = "0.0.2";
 	public const IS_DEVELOPMENT_BUILD = false;
 	public const BUILD_CHANNEL = "stable";
 }
