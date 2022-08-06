@@ -229,7 +229,7 @@ class Loader extends PluginBase{
             }
         }
         foreach($replaces as $key => $value){
-            $message = str_replace("{" . $key . "}", $value, $message);
+            $message = str_replace("{" . $key . "}", (string) $value, $message);
         }
         return TextFormat::colorize($message);
     }
