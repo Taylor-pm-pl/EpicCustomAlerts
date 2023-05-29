@@ -6,7 +6,7 @@
 [phpversion]: https://img.shields.io/badge/PHP-8.0%2B-red?style=for-the-badge
 [issueslink]: https://github.com/David-pm-pl/EpicCustomAlerts/issues
 [discord]: https://img.shields.io/badge/Discord-blue?style=for-the-badge
-[discordlink]: https://discord.gg/34PC5u9W
+[discordlink]: https://discord.gg/yAhsgskaGy
 
 [![releasesImg]][releases] [![licenseImg]][license] ![phpversion] [![issues]][issueslink] [![discord]][discordlink]
 
