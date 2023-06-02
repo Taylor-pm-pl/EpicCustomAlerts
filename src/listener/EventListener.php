@@ -26,7 +26,7 @@ class EventListener implements Listener{
     public function __construct(Loader $eca)
     {
         $this->eca = $eca;
-        $this->config = (array)$this->eca->getConfig()->getAll();
+        $this->config = $this->eca->getConfig()->getAll();
     }
 
     public function onPlayerJoin(PlayerJoinEvent $event) : void {
@@ -78,14 +78,12 @@ class EventListener implements Listener{
                 if ($this->eca->isCustom("WhitelistedServer")){
                     $player->kick($this->eca->getMessage("WhitelistedServer", $replaces), $this->eca->getMessage("WhitelistedServer", $replaces));
                     $event->cancel();
-                    return;
                 }
             }
         } else{
             if ($this->eca->isCustom("FullServer")){
                 $player->kick($this->eca->getMessage("FullServer", $replaces), $this->eca->getMessage("FullServer", $replaces));
                 $event->cancel();
-                return;
             }
         }
     }
@@ -110,17 +108,16 @@ class EventListener implements Listener{
         }
     }
 
-    public function onPlayerDeath(PlayerDeathEvent $event){
+    public function onPlayerDeath(PlayerDeathEvent $event): void
+    {
         $player = $event->getPlayer();
-        if ($player instanceof Player){
-            $cause = $player->getLastDamageCause();
-            if ($this->eca->isDeathHidden($cause)){
-                $event->setDeathMessage("");
-            } elseif ($this->eca->isDeathCustom($cause)){
-                $event->setDeathMessage($this->eca->getDeathMessage($player, $cause));
-            } else{
-                $event->setDeathMessage($event->getDeathMessage());
-            }
+        $cause = $player->getLastDamageCause();
+        if ($this->eca->isDeathHidden($cause)){
+            $event->setDeathMessage("");
+        } elseif ($this->eca->isDeathCustom($cause)){
+            $event->setDeathMessage($this->eca->getDeathMessage($player, $cause));
+        } else{
+            $event->setDeathMessage($event->getDeathMessage());
         }
     }
 
