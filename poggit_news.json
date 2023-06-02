@@ -1,7 +1,0 @@
-{
-  "version": "0.0.2",
-  "time": 1654345127,
-  "link": "https://github.com/David-pm-pl/EpicCustomAlerts/releases/tag/v0.0.2",
-  "download_link": "https://poggit.pmmp.io/r/174781/EpicCustomAlerts_dev-14.phar",
-  "patch_notes": "## Whats New ?\n- Update OutdatedClient, OutdatedServer\n- Fix FirstJoin Alert"
-}
