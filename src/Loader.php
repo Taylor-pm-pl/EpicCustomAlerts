@@ -6,10 +6,11 @@ namespace davidglitch04\EpicCustomAlerts;
 
 use davidglitch04\EpicCustomAlerts\command\EpicCustomAlerts;
 use davidglitch04\EpicCustomAlerts\listener\EventListener;
-use davidglitch04\EpicCustomAlerts\updater\GetUpdateInfo;
+use davidglitch04\EpicCustomAlerts\updater\CheckUpdateTask;
 use pocketmine\entity\Entity;
 use pocketmine\event\entity\EntityDamageByBlockEvent;
 use pocketmine\event\entity\EntityDamageEvent;
+use pocketmine\item\VanillaItems;
 use pocketmine\permission\DefaultPermissions;
 use pocketmine\permission\Permission;
 use pocketmine\player\Player;
@@ -30,26 +31,22 @@ class Loader extends PluginBase{
     public function onEnable(): void
     {
         $this->saveDefaultConfig();
-        $this->config = (array)$this->getConfig()->getAll();
+        $this->config = $this->getConfig()->getAll();
         DefaultPermissions::registerPermission(new Permission("epiccustomalerts.command.allow", "Allow to use epiccustomalerts control"));
         $this->getServer()->getCommandMap()->register("epiccustomalerts", new EpicCustomAlerts($this));
         $this->getServer()->getPluginManager()->registerEvents(new EventListener($this), $this);
-        if(VersionInfo::IS_DEVELOPMENT_BUILD){ /* @phpstan-ignore-line (If condition is always false.) */
+        if(VersionInfo::IS_DEVELOPMENT_BUILD){
 			$this->getLogger()->warning("You are using the development builds. Development builds might have unexpected bugs, crash, break your plugins, corrupt all your data and more. Unless you're a developer and know what you're doing, please AVOID using development builds in production!");
 		}
         $this->checkUpdater();
     }
 
     protected function checkUpdater() : void {
-        $this->getServer()->getAsyncPool()->submitTask(new GetUpdateInfo($this, "https://raw.githubusercontent.com/David-pm-pl/EpicCustomAlerts/stable/poggit_news.json"));
+        $this->getServer()->getAsyncPool()->submitTask(new CheckUpdateTask($this->getDescription()->getName(), $this->getDescription()->getVersion()));
     }
 
     public static function getInstance(): Loader{
         return self::$instance;
-    }
-
-    public function getFileHack(): string{
-        return $this->getFile();
     }
 
     public function isCustom(string $type) : bool {
@@ -76,77 +73,48 @@ class Loader extends PluginBase{
         if(!$cause){
             return $this->config["Death"]["hide"];
         }
-        switch($cause->getCause()){
-            case EntityDamageEvent::CAUSE_CONTACT:
-                return $this->config["Death"]["death-contact-message"]["hide"];
-            case EntityDamageEvent::CAUSE_ENTITY_ATTACK:
-                return $this->config["Death"]["kill-message"]["hide"];
-            case EntityDamageEvent::CAUSE_PROJECTILE:
-                return $this->config["Death"]["death-projectile-message"]["hide"];
-            case EntityDamageEvent::CAUSE_SUFFOCATION:
-                return $this->config["Death"]["death-suffocation-message"]["hide"];
-            case EntityDamageEvent::CAUSE_FALL:
-                return $this->config["Death"]["death-fall-message"]["hide"];
-            case EntityDamageEvent::CAUSE_FIRE:
-                return $this->config["Death"]["death-fire-message"]["hide"];
-            case EntityDamageEvent::CAUSE_FIRE_TICK:
-                return $this->config["Death"]["death-on-fire-message"]["hide"];
-            case EntityDamageEvent::CAUSE_LAVA:
-                return $this->config["Death"]["death-lava-message"]["hide"];
-            case EntityDamageEvent::CAUSE_DROWNING:
-                return $this->config["Death"]["death-drowning-message"]["hide"];
-            case EntityDamageEvent::CAUSE_ENTITY_EXPLOSION:
-            case EntityDamageEvent::CAUSE_BLOCK_EXPLOSION:
-                return $this->config["Death"]["death-explosion-message"]["hide"];
-            case EntityDamageEvent::CAUSE_VOID:
-                return $this->config["Death"]["death-void-message"]["hide"];
-            case EntityDamageEvent::CAUSE_SUICIDE:
-                return $this->config["Death"]["death-suicide-message"]["hide"];
-            case EntityDamageEvent::CAUSE_MAGIC:
-                return $this->config["Death"]["death-magic-message"]["hide"];
-            default:
-                return $this->config["Death"]["hide"];
-        }
+        return match ($cause->getCause()) {
+            EntityDamageEvent::CAUSE_CONTACT => $this->config["Death"]["death-contact-message"]["hide"],
+            EntityDamageEvent::CAUSE_ENTITY_ATTACK => $this->config["Death"]["kill-message"]["hide"],
+            EntityDamageEvent::CAUSE_PROJECTILE => $this->config["Death"]["death-projectile-message"]["hide"],
+            EntityDamageEvent::CAUSE_SUFFOCATION => $this->config["Death"]["death-suffocation-message"]["hide"],
+            EntityDamageEvent::CAUSE_FALL => $this->config["Death"]["death-fall-message"]["hide"],
+            EntityDamageEvent::CAUSE_FIRE => $this->config["Death"]["death-fire-message"]["hide"],
+            EntityDamageEvent::CAUSE_FIRE_TICK => $this->config["Death"]["death-on-fire-message"]["hide"],
+            EntityDamageEvent::CAUSE_LAVA => $this->config["Death"]["death-lava-message"]["hide"],
+            EntityDamageEvent::CAUSE_DROWNING => $this->config["Death"]["death-drowning-message"]["hide"],
+            EntityDamageEvent::CAUSE_ENTITY_EXPLOSION, EntityDamageEvent::CAUSE_BLOCK_EXPLOSION => $this->config["Death"]["death-explosion-message"]["hide"],
+            EntityDamageEvent::CAUSE_VOID => $this->config["Death"]["death-void-message"]["hide"],
+            EntityDamageEvent::CAUSE_SUICIDE => $this->config["Death"]["death-suicide-message"]["hide"],
+            EntityDamageEvent::CAUSE_MAGIC => $this->config["Death"]["death-magic-message"]["hide"],
+            default => $this->config["Death"]["hide"],
+        };
     }
 
     public function isDeathCustom(EntityDamageEvent $cause = null){
         if(!$cause){
             return $this->config["Death"]["custom"];
         }
-        switch($cause->getCause()){
-            case EntityDamageEvent::CAUSE_CONTACT:
-                return $this->config["Death"]["death-contact-message"]["custom"];
-            case EntityDamageEvent::CAUSE_ENTITY_ATTACK:
-                return $this->config["Death"]["kill-message"]["custom"];
-            case EntityDamageEvent::CAUSE_PROJECTILE:
-                return $this->config["Death"]["death-projectile-message"]["custom"];
-            case EntityDamageEvent::CAUSE_SUFFOCATION:
-                return $this->config["Death"]["death-suffocation-message"]["custom"];
-            case EntityDamageEvent::CAUSE_FALL:
-                return $this->config["Death"]["death-fall-message"]["custom"];
-            case EntityDamageEvent::CAUSE_FIRE:
-                return $this->config["Death"]["death-fire-message"]["custom"];
-            case EntityDamageEvent::CAUSE_FIRE_TICK:
-                return $this->config["Death"]["death-on-fire-message"]["custom"];
-            case EntityDamageEvent::CAUSE_LAVA:
-                return $this->config["Death"]["death-lava-message"]["custom"];
-            case EntityDamageEvent::CAUSE_DROWNING:
-                return $this->config["Death"]["death-drowning-message"]["custom"];
-            case EntityDamageEvent::CAUSE_ENTITY_EXPLOSION:
-            case EntityDamageEvent::CAUSE_BLOCK_EXPLOSION:
-                return $this->config["Death"]["death-explosion-message"]["custom"];
-            case EntityDamageEvent::CAUSE_VOID:
-                return $this->config["Death"]["death-void-message"]["custom"];
-            case EntityDamageEvent::CAUSE_SUICIDE:
-                return $this->config["Death"]["death-suicide-message"]["custom"];
-            case EntityDamageEvent::CAUSE_MAGIC:
-                return $this->config["Death"]["death-magic-message"]["custom"];
-            default:
-                return $this->config["Death"]["custom"];
-        }
+        return match ($cause->getCause()) {
+            EntityDamageEvent::CAUSE_CONTACT => $this->config["Death"]["death-contact-message"]["custom"],
+            EntityDamageEvent::CAUSE_ENTITY_ATTACK => $this->config["Death"]["kill-message"]["custom"],
+            EntityDamageEvent::CAUSE_PROJECTILE => $this->config["Death"]["death-projectile-message"]["custom"],
+            EntityDamageEvent::CAUSE_SUFFOCATION => $this->config["Death"]["death-suffocation-message"]["custom"],
+            EntityDamageEvent::CAUSE_FALL => $this->config["Death"]["death-fall-message"]["custom"],
+            EntityDamageEvent::CAUSE_FIRE => $this->config["Death"]["death-fire-message"]["custom"],
+            EntityDamageEvent::CAUSE_FIRE_TICK => $this->config["Death"]["death-on-fire-message"]["custom"],
+            EntityDamageEvent::CAUSE_LAVA => $this->config["Death"]["death-lava-message"]["custom"],
+            EntityDamageEvent::CAUSE_DROWNING => $this->config["Death"]["death-drowning-message"]["custom"],
+            EntityDamageEvent::CAUSE_ENTITY_EXPLOSION, EntityDamageEvent::CAUSE_BLOCK_EXPLOSION => $this->config["Death"]["death-explosion-message"]["custom"],
+            EntityDamageEvent::CAUSE_VOID => $this->config["Death"]["death-void-message"]["custom"],
+            EntityDamageEvent::CAUSE_SUICIDE => $this->config["Death"]["death-suicide-message"]["custom"],
+            EntityDamageEvent::CAUSE_MAGIC => $this->config["Death"]["death-magic-message"]["custom"],
+            default => $this->config["Death"]["custom"],
+        };
     }
 
-    public function getDeathMessage(Player $player, EntityDamageEvent $cause = null){
+    public function getDeathMessage(Player $player, EntityDamageEvent $cause = null): string
+    {
         $replaces = array(
             "PLAYER" => $player->getName(),
             "MAXPLAYERS" => $this->getServer()->getMaxPlayers(),
@@ -169,8 +137,8 @@ class Loader extends PluginBase{
                     $killer = $cause->getDamager();
                     if($killer instanceof Player){
                         $replaces["KILLER"] = $killer->getName();
-                        $itemhand = $killer->getInventory()->getItemInHand();
-                        $replaces["ITEM"] = ($itemhand->getId() !== 0) ? $itemhand->getName() : "hand";
+                        $itemInHand = $killer->getInventory()->getItemInHand();
+                        $replaces["ITEM"] = (!$itemInHand->equals(VanillaItems::AIR())) ? $itemInHand->getName() : "hand";
                         break;
                     }
                     if($killer instanceof Entity){
