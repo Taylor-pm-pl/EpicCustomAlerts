@@ -10,6 +10,7 @@ use pocketmine\event\Listener;
 use pocketmine\event\player\PlayerDeathEvent;
 use pocketmine\event\player\PlayerJoinEvent;
 use pocketmine\event\player\PlayerLoginEvent;
+use pocketmine\event\player\PlayerPreLoginEvent;
 use pocketmine\event\player\PlayerQuitEvent;
 use pocketmine\event\server\DataPacketReceiveEvent;
 use pocketmine\network\mcpe\protocol\LoginPacket;
@@ -26,7 +27,7 @@ class EventListener implements Listener{
     public function __construct(Loader $eca)
     {
         $this->eca = $eca;
-        $this->config = (array)$this->eca->getConfig()->getAll();
+        $this->config = $this->eca->getConfig()->getAll();
     }
 
     public function onPlayerJoin(PlayerJoinEvent $event) : void {
@@ -65,27 +66,29 @@ class EventListener implements Listener{
         }
     }
 
-    public function onPlayerLogin(PlayerLoginEvent $event) : void {
-        $player = $event->getPlayer();
+    public function onPlayerPreLogin(PlayerPreLoginEvent $event) : void {
+        $playerInfo = $event->getPlayerInfo();
+        $kickFlags = $event->getKickFlags()[0];
         $replaces = [
-            "PLAYER" => $player->getName(),
+            "PLAYER" => $playerInfo->getUsername(),
             "MAXPLAYERS" => Server::getInstance()->getMaxPlayers(),
             "TOTALPLAYERS" => count(Server::getInstance()->getOnlinePlayers()),
             "TIME" => date($this->config["date-format"])
         ];
-        if (count(Server::getInstance()->getOnlinePlayers()) - 1 < Server::getInstance()->getMaxPlayers()){
-            if (!Server::getInstance()->isWhitelisted($player->getName())){
-                if ($this->eca->isCustom("WhitelistedServer")){
-                    $player->kick($this->eca->getMessage("WhitelistedServer", $replaces), $this->eca->getMessage("WhitelistedServer", $replaces));
-                    $event->cancel();
-                    return;
-                }
+        if ($kickFlags === PlayerPreLoginEvent::KICK_FLAG_SERVER_WHITELISTED) {
+            if ($this->eca->isCustom("WhitelistedServer")){
+                $event->setKickFlag(
+                    PlayerPreLoginEvent::KICK_FLAG_SERVER_WHITELISTED,
+                    $this->eca->getMessage("WhitelistedServer", $replaces)
+                );
             }
-        } else{
+        }
+        if ($kickFlags === PlayerPreLoginEvent::KICK_FLAG_SERVER_FULL) {
             if ($this->eca->isCustom("FullServer")){
-                $player->kick($this->eca->getMessage("FullServer", $replaces), $this->eca->getMessage("FullServer", $replaces));
-                $event->cancel();
-                return;
+                $event->setKickFlag(
+                    PlayerPreLoginEvent::KICK_FLAG_SERVER_FULL,
+                    $this->eca->getMessage("FullServer", $replaces)
+                );
             }
         }
     }
@@ -110,17 +113,16 @@ class EventListener implements Listener{
         }
     }
 
-    public function onPlayerDeath(PlayerDeathEvent $event){
+    public function onPlayerDeath(PlayerDeathEvent $event): void
+    {
         $player = $event->getPlayer();
-        if ($player instanceof Player){
-            $cause = $player->getLastDamageCause();
-            if ($this->eca->isDeathHidden($cause)){
-                $event->setDeathMessage("");
-            } elseif ($this->eca->isDeathCustom($cause)){
-                $event->setDeathMessage($this->eca->getDeathMessage($player, $cause));
-            } else{
-                $event->setDeathMessage($event->getDeathMessage());
-            }
+        $cause = $player->getLastDamageCause();
+        if ($this->eca->isDeathHidden($cause)){
+            $event->setDeathMessage("");
+        } elseif ($this->eca->isDeathCustom($cause)){
+            $event->setDeathMessage($this->eca->getDeathMessage($player, $cause));
+        } else{
+            $event->setDeathMessage($event->getDeathMessage());
         }
     }
 
