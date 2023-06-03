@@ -68,7 +68,7 @@ class EventListener implements Listener{
 
     public function onPlayerPreLogin(PlayerPreLoginEvent $event) : void {
         $playerInfo = $event->getPlayerInfo();
-        $kickFlags = $event->getKickFlags()[0];
+        $kickFlags = $event->getKickFlags()[0] ?? null;
         $replaces = [
             "PLAYER" => $playerInfo->getUsername(),
             "MAXPLAYERS" => Server::getInstance()->getMaxPlayers(),
