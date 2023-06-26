@@ -4,7 +4,7 @@ namespace davidglitch04\EpicCustomAlerts\updater;
 
 use pocketmine\scheduler\AsyncTask;
 use pocketmine\utils\Internet;
-use TungstenVn\Clothes\Clothes;
+use davidglitch04\EpicCustomAlerts;
 use function json_decode;
 use function version_compare;
 use function vsprintf;
@@ -49,8 +49,8 @@ class CheckUpdateTask extends AsyncTask{
      * @return void
      */
     public function onCompletion() : void{
-        $plugin = Clothes::getInstance();
-        if(!$plugin instanceof Clothes){
+        $plugin = Loader::getInstance();
+        if(!$plugin instanceof Loader){
             return;
         }
 
