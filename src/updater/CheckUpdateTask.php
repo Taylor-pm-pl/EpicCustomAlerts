@@ -4,7 +4,7 @@ namespace davidglitch04\EpicCustomAlerts\updater;
 
 use pocketmine\scheduler\AsyncTask;
 use pocketmine\utils\Internet;
-use davidglitch04\EpicCustomAlerts;
+use davidglitch04\EpicCustomAlerts\Loader;
 use function json_decode;
 use function version_compare;
 use function vsprintf;
